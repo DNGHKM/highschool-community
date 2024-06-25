@@ -3,8 +3,8 @@
     "version": "2.2.13",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -208.33332505491077,
-    "scrollLeft": -149.99160745317596,
+    "scrollTop": -376.77776673988103,
+    "scrollLeft": -437.99160745317596,
     "zoomLevel": 0.8,
     "show": {
       "tableComment": true,
@@ -264,7 +264,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -282,7 +282,7 @@
           "active": false,
           "left": 134.25,
           "top": 369,
-          "zIndex": 1924,
+          "zIndex": 7,
           "widthName": 60,
           "widthComment": 60,
           "color": "#2196F3"
@@ -396,7 +396,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -506,7 +506,7 @@
           "active": false,
           "left": 826,
           "top": 371.25,
-          "zIndex": 1922,
+          "zIndex": 6,
           "widthName": 60,
           "widthComment": 60,
           "color": "#F44336"
@@ -592,7 +592,7 @@
           "active": false,
           "left": 1482.25,
           "top": 300,
-          "zIndex": 1932,
+          "zIndex": 5,
           "widthName": 60,
           "widthComment": 60,
           "color": "#4CAF50"
@@ -697,10 +697,10 @@
             }
           },
           {
-            "id": "312bd70e-8352-42f3-b13d-8a485109f0e7",
-            "name": "office",
-            "comment": "교육청명",
-            "dataType": "VARCHAR(20)",
+            "id": "0af0d16e-266f-46d9-ac92-896d7c787d03",
+            "name": "address",
+            "comment": "기본주소",
+            "dataType": "VARCHAR(100)",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -715,39 +715,39 @@
               "pfk": false,
               "widthName": 60,
               "widthComment": 60,
-              "widthDataType": 87.71875,
+              "widthDataType": 94.94873046875,
               "widthDefault": 60
             }
           },
           {
-            "id": "37d899d9-c97b-4f43-af83-3e28afd03439",
-            "name": "sido",
-            "comment": "시도명",
-            "dataType": "VARCHAR(20)",
+            "id": "440dea80-e03f-4a81-bdc0-78ab71d20841",
+            "name": "address_detail",
+            "comment": "상세주소",
+            "dataType": "VARCHAR(100)",
             "default": "",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": true
+              "notNull": false
             },
             "ui": {
               "active": false,
               "pk": false,
               "fk": false,
               "pfk": false,
-              "widthName": 60,
+              "widthName": 86.55712890625,
               "widthComment": 60,
-              "widthDataType": 87.71875,
+              "widthDataType": 94.94873046875,
               "widthDefault": 60
             }
           }
         ],
         "ui": {
-          "active": false,
-          "left": 871.75,
-          "top": 775.75,
-          "zIndex": 1928,
+          "active": true,
+          "left": 874.25,
+          "top": 783.25,
+          "zIndex": 74,
           "widthName": 60,
           "widthComment": 60,
           "color": "#795548"
@@ -879,7 +879,7 @@
           "active": false,
           "left": 1477.25,
           "top": 654.5,
-          "zIndex": 1930,
+          "zIndex": 4,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FFEB3B"
@@ -1057,7 +1057,7 @@
           "active": false,
           "left": 837.7094,
           "top": 33.75,
-          "zIndex": 1915,
+          "zIndex": 1,
           "widthName": 61.9599609375,
           "widthComment": 60,
           "color": "#673AB7"
@@ -1212,7 +1212,7 @@
           "active": false,
           "left": 159.7295,
           "top": 772.416,
-          "zIndex": 1926,
+          "zIndex": 2,
           "widthName": 94.4853515625,
           "widthComment": 106,
           "color": "#009688"
@@ -1289,8 +1289,8 @@
           "columnIds": [
             "df12a661-64d7-406d-b86c-a4fa7cc020f1"
           ],
-          "x": 871.75,
-          "y": 871.75,
+          "x": 874.25,
+          "y": 879.25,
           "direction": "left"
         },
         "end": {
@@ -1367,8 +1367,8 @@
           "columnIds": [
             "df12a661-64d7-406d-b86c-a4fa7cc020f1"
           ],
-          "x": 1096.22119140625,
-          "y": 775.75,
+          "x": 1115.61474609375,
+          "y": 783.25,
           "direction": "top"
         },
         "end": {
@@ -1393,8 +1393,8 @@
           "columnIds": [
             "df12a661-64d7-406d-b86c-a4fa7cc020f1"
           ],
-          "x": 1320.6923828125,
-          "y": 871.75,
+          "x": 1356.9794921875,
+          "y": 879.25,
           "direction": "right"
         },
         "end": {
