@@ -15,6 +15,7 @@
     - 이메일
     - 고등학교명
     - 학생 인증 정보(학생증 또는 졸업증명서)
+  - 학교 정보는 neis api를 사용해서 가입 시 학교명을 입력하면 학교 리스트를 나열하여 제공한다.
 
   - 학생 인증 수단은 학생증 또는 졸업증명서를 사진찍어 첨부하여 요청하고, 관리자의 검토 후 가입 승인/거절된다.
   - 학생 인증 정보가 유효하면, 관리자의 승인 이후 'USER' 권한으로 변동된다.
@@ -58,14 +59,10 @@
 [go to the trouble shooting section](doc/TROUBLE_SHOOTING.md)
 
 ### Tech Stack
-<div align=center> 
-  <img src="https://img.shields.io/badge/Java-007396?style=flat&logo=Java&logoColor=white"> 
-  <img src="https://img.shields.io/badge/Spring-6DB33F?style=flat&logo=Spring&logoColor=white"> 
-  <img src="https://img.shields.io/badge/Spring%20Boot-%236DB33F?style=flat&logo=springboot&logoColor=white"> 
-  <img src="https://img.shields.io/badge/Spring%20Security-%236DB33F?style=flat&logo=springsecurity&logoColor=white"> 
-  <img src="https://img.shields.io/badge/MariaDB-003545?style=flat&logo=MariaDB&logoColor=white"> 
-  <img src="https://img.shields.io/badge/Redis-%23FF4438?style=flat&logo=redis&logoColor=white">
-  <img src="https://img.shields.io/badge/Github-181717?style=flat&logo=Github&logoColor=white">
-  
-</div>
+  <img src="https://img.shields.io/badge/Java-007396?style=flat&logo=Java&logoColor=white" alt="Java"> 
+  <img src="https://img.shields.io/badge/Spring-6DB33F?style=flat&logo=Spring&logoColor=white" alt="Spring"> 
+  <img src="https://img.shields.io/badge/Spring%20Boot-%236DB33F?style=flat&logo=springboot&logoColor=white" alt="Spring Boot"> 
+  <img src="https://img.shields.io/badge/Spring%20Security-%236DB33F?style=flat&logo=springsecurity&logoColor=white" alt="Spring Security"> 
+  <img src="https://img.shields.io/badge/MariaDB-003545?style=flat&logo=MariaDB&logoColor=white" alt="MariaDB"> 
+  <img src="https://img.shields.io/badge/Github-181717?style=flat&logo=Github&logoColor=white" alt="Github">
 

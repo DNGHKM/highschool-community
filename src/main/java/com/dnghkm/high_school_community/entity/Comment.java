@@ -1,42 +1,44 @@
-package com.dnghkm.highschool_community.entity;
+package com.dnghkm.high_school_community.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
-@Data
-@Table(name = "post")
-public class Post {
+@ToString(exclude = {"post"})
+@Builder
+@Table(name = "comment")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "school_id", nullable = false)
-    private School school;
-
-    @Enumerated(EnumType.STRING)
     @NotNull
-    private BoardType boardType;
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
     @ManyToOne
+    @NotNull
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @NotNull
-    @Column
+    @Column(length = 50)
     private String title;
 
     @NotNull
-    @Column(length = 1000)
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @NotNull
     @Column(name = "create_date")
-    private LocalDateTime createDate = LocalDateTime.now();
+    private LocalDateTime createdDate = LocalDateTime.now();
 
     @Column(name = "update_date")
     private LocalDateTime updateDate;

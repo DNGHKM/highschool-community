@@ -1,19 +1,28 @@
-package com.dnghkm.highschool_community.entity;
+package com.dnghkm.high_school_community.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
-@Data
+@ToString
+@Builder
 @Table(name = "school")
 public class School {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 7)
-    private String code;
+    @NotNull
+    @Column(name = "admin_code", length = 7, unique = true)
+    private String adminCode;
+
+    @NotNull
+    @Column(name = "sido_code", length = 20)
+    private String sidoCode;
 
     @NotNull
     @Column(length = 50)

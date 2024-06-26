@@ -1,4 +1,4 @@
-package com.dnghkm.highschool_community.entity;
+package com.dnghkm.high_school_community.entity;
 
 public enum BoardType {
     ANONYMOUS_GLOBAL,

@@ -1,13 +1,17 @@
-package com.dnghkm.highschool_community.entity;
+package com.dnghkm.high_school_community.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
-@Data
+@ToString(exclude = {"school"})
+@Builder
 @Table(name = "meal")
 public class Meal {
     @Id
