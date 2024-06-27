@@ -1,6 +1,7 @@
 package com.dnghkm.high_school_community.service;
 
 import com.dnghkm.high_school_community.dto.UserRegisterDto;
+import com.dnghkm.high_school_community.entity.Role;
 import com.dnghkm.high_school_community.entity.School;
 import com.dnghkm.high_school_community.entity.User;
 import com.dnghkm.high_school_community.repository.SchoolRepository;
@@ -86,7 +87,21 @@ class UserServiceTest {
         assertThrows(RuntimeException.class,
                 () -> userService.register(userRegisterDto));
     }
-    
 
+    @Test
+    @DisplayName("유저 허가")
+    void permitUser(){
+        //given
+        User user = User.builder().id(1L).permit(false).role(Role.TEMP).build();
 
+        given(userRepository.findById(1L)).willReturn(java.util.Optional.of(user));
+        given(userRepository.save(any(User.class))).willAnswer(invocation -> invocation.getArgument(0));
+
+        //when
+        userService.permitUser(1L);
+
+        //then
+        assertTrue(user.isPermit());
+        assertEquals(user.getRole(), Role.USER);
+    }
 }

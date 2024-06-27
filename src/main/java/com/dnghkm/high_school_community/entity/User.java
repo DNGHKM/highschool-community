@@ -46,4 +46,8 @@ public class User {
     @NotNull
     private boolean permit;
 
+    public void permitUser() {
+        this.role = Role.USER;
+        this.permit = true;
+    }
 }

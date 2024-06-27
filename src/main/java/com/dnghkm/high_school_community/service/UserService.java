@@ -9,16 +9,27 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
     private final UserRepository userRepository;
     private final SchoolRepository schoolRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public List<User> getAllUser(){
+        return userRepository.findAll();
+    }
+
+    public User getUserById(Long id){
+        return userRepository.findById(id).orElse(null);
+    }
 
     public User register(UserRegisterDto userDto) {
         String username = userDto.getUsername();
@@ -39,5 +50,16 @@ public class UserService {
         userRepository.save(user);
 
         return user;
+    }
+
+    public List<User> getUnPermittedUsers(){
+        return userRepository.findAllByPermitFalse();
+    }
+
+    public User permitUser(Long userId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
+        user.permitUser();
+        return userRepository.save(user);
     }
 }
