@@ -1,0 +1,92 @@
+package com.dnghkm.high_school_community.service;
+
+import com.dnghkm.high_school_community.dto.UserRegisterDto;
+import com.dnghkm.high_school_community.entity.School;
+import com.dnghkm.high_school_community.entity.User;
+import com.dnghkm.high_school_community.repository.SchoolRepository;
+import com.dnghkm.high_school_community.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
+
+class UserServiceTest {
+
+    @InjectMocks
+    private UserService userService;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private SchoolRepository schoolRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    @DisplayName("정상회원가입")
+    void testRegister(){
+        //given
+        String username = "testUser";
+        String encodedPassword = "encodedPassword";
+        String adminCode = "12345";
+        School school = School.builder().adminCode(adminCode).build();
+
+        UserRegisterDto userRegisterDto = UserRegisterDto.builder()
+                .username("testUser")
+                .password("abcd")
+                .name("Test User")
+                .adminCode(adminCode)
+                .phone("010-1234-1234")
+                .email("abcd@gamil.com").build();
+
+        given(userRepository.existsByUsername(username)).willReturn(false);
+        given(passwordEncoder.encode(userRegisterDto.getPassword())).willReturn(encodedPassword);
+        given(schoolRepository.findByAdminCode(adminCode)).willReturn(school);
+
+        //when
+        User user = userService.register(userRegisterDto);
+
+        //then
+        assertNotNull(user);
+        assertEquals(userRegisterDto.getUsername(), user.getUsername());
+        assertEquals(encodedPassword, user.getPassword());
+        assertEquals(username, user.getUsername());
+        assertEquals(school, user.getSchool());
+        assertFalse(user.isPermit());
+        assertNotNull(user.getSignInDate());
+
+        then(userRepository).should(times(1)).save(any(User.class));
+    }
+
+    @Test
+    @DisplayName("이미 존재하는 회원명_가입불가")
+    void testRegister_UsernameAlreadyExists(){
+        //given
+        String username = "testUser";
+        UserRegisterDto userRegisterDto = UserRegisterDto.builder().username(username).build();
+
+        given(userRepository.existsByUsername(username)).willReturn(true);
+        //when & then
+        assertThrows(RuntimeException.class,
+                () -> userService.register(userRegisterDto));
+    }
+    
+
+
+}

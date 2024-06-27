@@ -2,10 +2,14 @@ package com.dnghkm.high_school_community.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
+import lombok.*;
 
-@Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Entity
+@ToString(exclude = {"user"})
+@Builder
 @Table(name = "verification_file")
 public class VerificationFile {
     @Id
@@ -26,7 +30,7 @@ public class VerificationFile {
 
     @NotNull
     @Column(name = "file_name_UUID")
-    private String fileName_UUID;
+    private String fileNameUUID;
 
     @NotNull
     @Column(name = "file_type", length = 50)
