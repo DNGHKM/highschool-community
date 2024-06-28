@@ -1,14 +1,11 @@
 package com.dnghkm.high_school_community.controller;
 
-import com.dnghkm.high_school_community.dto.UserRegisterDto;
 import com.dnghkm.high_school_community.entity.User;
 import com.dnghkm.high_school_community.service.UserService;
-import com.dnghkm.high_school_community.service.VerificationFileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,7 +15,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final VerificationFileService verificationFileService;
 
     //ADMIN 권한자만 - 회원 목록 조회
     @GetMapping
@@ -42,20 +38,5 @@ public class UserController {
     public ResponseEntity<User> permitUser(@PathVariable Long userId) {
         User user = userService.permitUser(userId);
         return ResponseEntity.ok(user);
-    }
-
-    /**
-     *  # form-data POST 요청
-     *  유저는 가입 정보 기입과 동시에 파일을 업로드하여 가입요청함
-     *  USER 등록, 업로드 한 파일 저장함
-     */
-    @PostMapping("/register")
-    public ResponseEntity<User> register(
-            @RequestPart("user") UserRegisterDto userRegisterDto,
-            @RequestPart("verificationFile") MultipartFile multipartFile) {
-        userRegisterDto.setVerificationFile(multipartFile);
-        User registeredUser = userService.register(userRegisterDto);
-        verificationFileService.register(registeredUser, userRegisterDto);
-        return ResponseEntity.ok(registeredUser);
     }
 }

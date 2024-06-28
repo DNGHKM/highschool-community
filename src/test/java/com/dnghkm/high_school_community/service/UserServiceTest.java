@@ -1,6 +1,6 @@
 package com.dnghkm.high_school_community.service;
 
-import com.dnghkm.high_school_community.dto.UserRegisterDto;
+import com.dnghkm.high_school_community.dto.AuthDto;
 import com.dnghkm.high_school_community.entity.Role;
 import com.dnghkm.high_school_community.entity.School;
 import com.dnghkm.high_school_community.entity.User;
@@ -48,7 +48,7 @@ class UserServiceTest {
         String adminCode = "12345";
         School school = School.builder().adminCode(adminCode).build();
 
-        UserRegisterDto userRegisterDto = UserRegisterDto.builder()
+        AuthDto.SignUp signUp = AuthDto.SignUp.builder()
                 .username("testUser")
                 .password("abcd")
                 .name("Test User")
@@ -57,15 +57,15 @@ class UserServiceTest {
                 .email("abcd@gamil.com").build();
 
         given(userRepository.existsByUsername(username)).willReturn(false);
-        given(passwordEncoder.encode(userRegisterDto.getPassword())).willReturn(encodedPassword);
+        given(passwordEncoder.encode(signUp.getPassword())).willReturn(encodedPassword);
         given(schoolRepository.findByAdminCode(adminCode)).willReturn(school);
 
         //when
-        User user = userService.register(userRegisterDto);
+        User user = userService.register(signUp);
 
         //then
         assertNotNull(user);
-        assertEquals(userRegisterDto.getUsername(), user.getUsername());
+        assertEquals(signUp.getUsername(), user.getUsername());
         assertEquals(encodedPassword, user.getPassword());
         assertEquals(username, user.getUsername());
         assertEquals(school, user.getSchool());
@@ -80,12 +80,12 @@ class UserServiceTest {
     void testRegister_UsernameAlreadyExists(){
         //given
         String username = "testUser";
-        UserRegisterDto userRegisterDto = UserRegisterDto.builder().username(username).build();
+        AuthDto.SignUp signUp = AuthDto.SignUp.builder().username(username).build();
 
         given(userRepository.existsByUsername(username)).willReturn(true);
         //when & then
         assertThrows(RuntimeException.class,
-                () -> userService.register(userRegisterDto));
+                () -> userService.register(signUp));
     }
 
     @Test

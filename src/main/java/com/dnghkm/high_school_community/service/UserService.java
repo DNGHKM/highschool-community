@@ -1,6 +1,6 @@
 package com.dnghkm.high_school_community.service;
 
-import com.dnghkm.high_school_community.dto.UserRegisterDto;
+import com.dnghkm.high_school_community.dto.AuthDto;
 import com.dnghkm.high_school_community.entity.Role;
 import com.dnghkm.high_school_community.entity.User;
 import com.dnghkm.high_school_community.repository.SchoolRepository;
@@ -31,19 +31,19 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public User register(UserRegisterDto userDto) {
-        String username = userDto.getUsername();
+    public User register(AuthDto.SignUp signUp) {
+        String username = signUp.getUsername();
         if (userRepository.existsByUsername(username)) {
             throw new RuntimeException("Username is already in use");
         }
         User user = User.builder()
                 .username(username)
-                .password(passwordEncoder.encode(userDto.getPassword()))
-                .name(userDto.getName())
+                .password(passwordEncoder.encode(signUp.getPassword()))
+                .name(signUp.getName())
                 .role(Role.TEMP)
-                .phone(userDto.getPhone().replaceAll("-",""))
-                .email(userDto.getEmail())
-                .school(schoolRepository.findByAdminCode(userDto.getAdminCode()))
+                .phone(signUp.getPhone().replaceAll("-",""))
+                .email(signUp.getEmail())
+                .school(schoolRepository.findByAdminCode(signUp.getAdminCode()))
                 .signInDate(LocalDateTime.now())
                 .permit(false).build();
 
