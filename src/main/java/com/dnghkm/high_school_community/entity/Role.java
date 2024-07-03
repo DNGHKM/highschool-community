@@ -1,7 +1,7 @@
 package com.dnghkm.high_school_community.entity;
 
 public enum Role {
-    TEMP,
-    USER,
-    ADMIN
+    ROLE_TEMP,
+    ROLE_USER,
+    ROLE_ADMIN
 }

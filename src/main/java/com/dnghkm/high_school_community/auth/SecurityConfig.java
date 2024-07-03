@@ -39,12 +39,12 @@ public class SecurityConfig {
                 .formLogin(FormLoginConfigurer::disable)
                 .httpBasic(HttpBasicConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth", "/").permitAll()
+                        .requestMatchers("/auth", "/schools", "/").permitAll()
+                        .requestMatchers("/board/**").hasRole("USER")
                         .anyRequest().permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(new JwtFilter(jwtUtil), JwtAuthorizationFilter.class)
                 .addFilterAt(new JwtAuthorizationFilter(authenticationManager(configuration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
-
 }

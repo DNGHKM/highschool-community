@@ -30,7 +30,7 @@ public class User {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
-    private Role role = Role.TEMP;
+    private Role role = Role.ROLE_TEMP;
     @NotNull
     @Column(unique = true, length = 15)
     private String phone;
@@ -47,7 +47,7 @@ public class User {
     private boolean permit;
 
     public void permitUser() {
-        this.role = Role.USER;
+        this.role = Role.ROLE_USER;
         this.permit = true;
     }
 }

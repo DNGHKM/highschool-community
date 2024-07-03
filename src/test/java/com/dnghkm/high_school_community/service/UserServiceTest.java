@@ -92,7 +92,7 @@ class UserServiceTest {
     @DisplayName("유저 허가")
     void permitUser(){
         //given
-        User user = User.builder().id(1L).permit(false).role(Role.TEMP).build();
+        User user = User.builder().id(1L).permit(false).role(Role.ROLE_TEMP).build();
 
         given(userRepository.findById(1L)).willReturn(java.util.Optional.of(user));
         given(userRepository.save(any(User.class))).willAnswer(invocation -> invocation.getArgument(0));
@@ -102,6 +102,6 @@ class UserServiceTest {
 
         //then
         assertTrue(user.isPermit());
-        assertEquals(user.getRole(), Role.USER);
+        assertEquals(user.getRole(), Role.ROLE_USER);
     }
 }

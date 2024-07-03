@@ -3,6 +3,7 @@ package com.dnghkm.high_school_community.auth;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
+@Slf4j
 public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
@@ -30,6 +32,8 @@ public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter
         String password = obtainPassword(request);
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
+        log.info("로그인 성공");
+        log.info("username: {}", username);
         return authenticationManager.authenticate(authToken);
     }
 
@@ -43,6 +47,7 @@ public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
         String token = jwtUtil.generateToken(username, role, 60 * 60 * 10L);
+        log.info("login user = {}, role = {}", username, role);
         response.addHeader("Authorization", "Bearer " + token);
     }
 

@@ -1,5 +1,6 @@
 package com.dnghkm.high_school_community.service;
 
+import com.dnghkm.high_school_community.dto.PostDto;
 import com.dnghkm.high_school_community.entity.BoardType;
 import com.dnghkm.high_school_community.entity.Post;
 import com.dnghkm.high_school_community.entity.School;
@@ -9,6 +10,7 @@ import com.dnghkm.high_school_community.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -70,6 +72,21 @@ public class PostService {
         if (!post.getSchool().equals(findSchool)) {
             throw new RuntimeException("게시글 조회 권한이 없습니다.");
         }
+        return post;
+    }
+
+    //공통게시판 게시글 작성
+    public Post postGlobal(PostDto postDto, String username) {
+        User user = userRepository.findByUsername(username);
+        Post post = Post.builder()
+                .school(user.getSchool())
+                .boardType(BoardType.GLOBAL)
+                .user(user)
+                .title(postDto.getTitle())
+                .content(postDto.getContent())
+                .createDate(LocalDateTime.now())
+                .updateDate(LocalDateTime.now()).build();
+        postRepository.save(post);
         return post;
     }
 }

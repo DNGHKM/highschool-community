@@ -34,7 +34,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(userId));
     }
 
-    @PatchMapping("/register/{userId}")
+    @PatchMapping("/permit/{userId}")
     public ResponseEntity<User> permitUser(@PathVariable Long userId) {
         User user = userService.permitUser(userId);
         return ResponseEntity.ok(user);

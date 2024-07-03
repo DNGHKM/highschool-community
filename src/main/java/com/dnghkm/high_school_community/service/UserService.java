@@ -40,7 +40,7 @@ public class UserService {
                 .username(username)
                 .password(passwordEncoder.encode(signUp.getPassword()))
                 .name(signUp.getName())
-                .role(Role.TEMP)
+                .role(Role.ROLE_TEMP)
                 .phone(signUp.getPhone().replaceAll("-",""))
                 .email(signUp.getEmail())
                 .school(schoolRepository.findByAdminCode(signUp.getAdminCode()))

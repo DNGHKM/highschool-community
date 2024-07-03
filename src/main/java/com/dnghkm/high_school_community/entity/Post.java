@@ -40,7 +40,7 @@ public class Post {
 
     @NotNull
     @Column(name = "create_date")
-    private LocalDateTime createDate = LocalDateTime.now();
+    private LocalDateTime createDate;
 
     @Column(name = "update_date")
     private LocalDateTime updateDate;
