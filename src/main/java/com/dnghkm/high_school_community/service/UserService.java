@@ -46,9 +46,7 @@ public class UserService {
                 .school(schoolRepository.findByAdminCode(signUp.getAdminCode()))
                 .signInDate(LocalDateTime.now())
                 .permit(false).build();
-
         userRepository.save(user);
-
         return user;
     }
 

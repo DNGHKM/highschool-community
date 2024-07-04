@@ -9,12 +9,14 @@ import com.dnghkm.high_school_community.repository.PostRepository;
 import com.dnghkm.high_school_community.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -22,65 +24,40 @@ public class PostService {
     /**
      * Todo : Paging 구현
      */
-    //공통게시판 게시글 전체 조회
-    public List<Post> getAllGlobalPost() {
-        return postRepository.findAllByBoardType(BoardType.GLOBAL);
+
+    //공통 게시판 전체조회
+    public List<Post> getAllGlobalPosts(BoardType boardType) {
+        return postRepository.findAllByBoardType(boardType);
     }
 
-    //공통 게시글 단일조회
-    public Post getGlobalPost(Long postId) {
-        return postRepository.findByIdAndBoardType(postId, BoardType.GLOBAL);
-    }
-
-    //공통-익명게시판 게시글 전체 조회
-    public List<Post> getAllGlobalAnonymousPosts() {
-        return postRepository.findAllByBoardType(BoardType.GLOBAL_ANONYMOUS);
-    }
-
-    //공통-익명 게시글 단일조회
-    public Post getGlobalAnonymousPost(Long postId) {
-        return postRepository.findByIdAndBoardType(postId, BoardType.GLOBAL_ANONYMOUS);
+    //공통 게시판 게시글 단일 상세조회
+    public Post getGlobalPost(Long postId, BoardType boardType) {
+        return postRepository.findByIdAndBoardType(postId, boardType);
     }
 
     //학교 게시판 게시글 전체 조회
-    public List<Post> getAllSchoolPost(String username) {
+    public List<Post> getAllSchoolPosts(String username, BoardType boardType) {
         User user = userRepository.findByUsername(username);
         School findSchool = user.getSchool();
-        return postRepository.findAllBySchoolAndBoardType(findSchool, BoardType.SCHOOL);
+        return postRepository.findAllBySchoolAndBoardType(findSchool, boardType);
     }
 
-    //학교게시판 게시글 단일조회
-    public Post getSchoolPost(String username, Long postId) {
+    //공통 게시판 게시글 단일 상세조회
+    public Post getSchoolPost(String username, Long postId, BoardType boardType) {
         School findSchool = userRepository.findByUsername(username).getSchool();
-        Post post = postRepository.findByIdAndBoardType(postId, BoardType.SCHOOL);
+        Post post = postRepository.findByIdAndBoardType(postId, boardType);
         if (!post.getSchool().equals(findSchool)) {
             throw new RuntimeException("게시글 조회 권한이 없습니다.");
         }
         return post;
     }
 
-    //학교-익명게시판 게시글 전체 조회
-    public List<Post> getAllSchoolAnonymousPost(String username) {
-        School findSchool = userRepository.findByUsername(username).getSchool();
-        return postRepository.findAllBySchoolAndBoardType(findSchool, BoardType.SCHOOL_ANONYMOUS);
-    }
-
-    //학교-익명게시판 게시글 단일조회
-    public Post getSchoolAnonymousPost(String username, Long postId) {
-        School findSchool = userRepository.findByUsername(username).getSchool();
-        Post post = postRepository.findByIdAndBoardType(postId, BoardType.SCHOOL_ANONYMOUS);
-        if (!post.getSchool().equals(findSchool)) {
-            throw new RuntimeException("게시글 조회 권한이 없습니다.");
-        }
-        return post;
-    }
-
-    //공통게시판 게시글 작성
-    public Post postGlobal(PostDto postDto, String username) {
+    //게시글 작성
+    public Post writePost(PostDto postDto, String username, BoardType boardType) {
         User user = userRepository.findByUsername(username);
         Post post = Post.builder()
                 .school(user.getSchool())
-                .boardType(BoardType.GLOBAL)
+                .boardType(boardType)
                 .user(user)
                 .title(postDto.getTitle())
                 .content(postDto.getContent())
