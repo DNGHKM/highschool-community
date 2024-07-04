@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -49,5 +50,18 @@ public class User {
     public void permitUser() {
         this.role = Role.ROLE_USER;
         this.permit = true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(username, user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username);
     }
 }

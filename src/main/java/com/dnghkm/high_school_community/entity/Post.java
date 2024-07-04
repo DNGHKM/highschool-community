@@ -1,5 +1,6 @@
 package com.dnghkm.high_school_community.entity;
 
+import com.dnghkm.high_school_community.dto.PostDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -47,4 +48,18 @@ public class Post {
 
     @NotNull
     private int vote = 0;
+
+    @NotNull
+    @Column(name = "deleted")
+    private boolean deleted = false;
+
+    public void updatePost(PostDto postDto){
+        this.title = postDto.getTitle();
+        this.content = postDto.getContent();
+        this.updateDate = LocalDateTime.now();
+    }
+
+    public void deletePost(){
+        this.deleted = true;
+    }
 }

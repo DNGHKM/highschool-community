@@ -90,7 +90,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("유저 허가")
-    void permitUser(){
+    void permit(){
         //given
         User user = User.builder().id(1L).permit(false).role(Role.ROLE_TEMP).build();
 
@@ -98,7 +98,7 @@ class UserServiceTest {
         given(userRepository.save(any(User.class))).willAnswer(invocation -> invocation.getArgument(0));
 
         //when
-        userService.permitUser(1L);
+        userService.permit(1L);
 
         //then
         assertTrue(user.isPermit());

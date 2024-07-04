@@ -54,7 +54,7 @@ public class UserService {
         return userRepository.findAllByPermitFalse();
     }
 
-    public User permitUser(Long userId){
+    public User permit(Long userId){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
         user.permitUser();

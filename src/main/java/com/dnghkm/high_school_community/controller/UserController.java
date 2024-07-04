@@ -33,7 +33,7 @@ public class UserController {
 
     @PatchMapping("/permit/{userId}")
     public ResponseEntity<User> permitUser(@PathVariable Long userId) {
-        User user = userService.permitUser(userId);
+        User user = userService.permit(userId);
         return ResponseEntity.ok(user);
     }
 }

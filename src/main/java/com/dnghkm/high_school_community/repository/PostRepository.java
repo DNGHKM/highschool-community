@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
-    List<Post> findAllByBoardType(BoardType boardType);
-    Post findByIdAndBoardType(Long postId, BoardType boardType);
-    List<Post> findAllBySchoolAndBoardType(School school, BoardType boardType);
+    List<Post> findAllByBoardTypeAndDeletedIsFalse(BoardType boardType);
+    Post findByIdAndBoardTypeAndDeletedIsFalse(Long postId, BoardType boardType);
+    List<Post> findAllBySchoolAndBoardTypeAndDeletedIsFalse(School school, BoardType boardType);
 }

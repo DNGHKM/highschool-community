@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth", "/schools", "/").permitAll()
                         .requestMatchers("/board/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/user/**").hasRole("ADMIN")
+//                        .requestMatchers("/user/**").hasRole("ADMIN")
                         .anyRequest().permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtFilter(jwtUtil), JwtAuthorizationFilter.class)

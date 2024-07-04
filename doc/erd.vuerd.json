@@ -3,7 +3,7 @@
     "version": "2.2.13",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -155.09093331502973,
+    "scrollTop": -156.09093331502973,
     "scrollLeft": -238,
     "zoomLevel": 0.8,
     "show": {
@@ -500,13 +500,36 @@
               "widthDataType": 60,
               "widthDefault": 60
             }
+          },
+          {
+            "id": "193366f6-c29f-430b-bc71-152d3054c750",
+            "name": "deleted",
+            "comment": "삭제여부",
+            "dataType": "BOOLEAN",
+            "default": "false",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 64.8544921875,
+              "widthDefault": 60
+            }
           }
         ],
         "ui": {
           "active": false,
           "left": 886,
-          "top": 333.75,
-          "zIndex": 4,
+          "top": 332.5,
+          "zIndex": 33,
           "widthName": 60,
           "widthComment": 60,
           "color": "#F44336"
@@ -1184,7 +1207,7 @@
             "4da06d88-406d-46d1-a8e5-c9ea85d75717"
           ],
           "x": 886,
-          "y": 460.5,
+          "y": 469.5,
           "direction": "left"
         },
         "constraintName": "fk_user_to_post",
@@ -1227,7 +1250,7 @@
             "9bad1992-39bc-4d0b-92a0-65407fb5ff8a"
           ],
           "x": 1157.832763671875,
-          "y": 333.75,
+          "y": 332.5,
           "direction": "top"
         },
         "end": {
@@ -1288,7 +1311,7 @@
             "af9e6ded-1123-4e60-9c30-0704b966d284"
           ],
           "x": 1157.832763671875,
-          "y": 587.25,
+          "y": 606.5,
           "direction": "bottom"
         },
         "constraintName": "fk_school_to_post",
