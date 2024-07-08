@@ -49,6 +49,20 @@ public class BoardController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/upvote/{postId}")
+    public ResponseEntity<Integer> upvotePost(@PathVariable Long postId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        int vote = postService.upvotePost(postId, username);
+        return ResponseEntity.ok(vote);
+    }
+
+    @PostMapping("/downvote/{postId}")
+    public ResponseEntity<Integer> downvotePost(@PathVariable Long postId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        int vote = postService.downvotePost(postId, username);
+        return ResponseEntity.ok(vote);
+    }
+
     @GetMapping("/global")
     public ResponseEntity<List<Post>> getAllGlobalPosts() {
         return ResponseEntity.ok(postService.getAllGlobalPosts(BoardType.GLOBAL));

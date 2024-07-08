@@ -62,4 +62,10 @@ public class Post {
     public void deletePost(){
         this.deleted = true;
     }
+    public void upvote(){
+        this.vote++;
+    }
+    public void downVote(){
+        this.vote--;
+    }
 }
