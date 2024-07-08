@@ -36,4 +36,10 @@ public class UserController {
         User user = userService.permit(userId);
         return ResponseEntity.ok(user);
     }
+
+    @PatchMapping("/reject/{userId}")
+    public ResponseEntity<Void> rejectUser(@PathVariable Long userId) {
+        userService.reject(userId);
+        return  ResponseEntity.noContent().build();
+    }
 }

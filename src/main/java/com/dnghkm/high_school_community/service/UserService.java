@@ -56,8 +56,17 @@ public class UserService {
 
     public User permit(Long userId){
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
+                .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다. userId = " + userId));
         user.permitUser();
         return userRepository.save(user);
+    }
+
+    public void reject(Long userId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다. userId = " + userId));
+        if(user.isPermit()){
+            throw new RuntimeException("이미 가입 승인 된 유저입니다.");
+        }
+        userRepository.delete(user);
     }
 }
