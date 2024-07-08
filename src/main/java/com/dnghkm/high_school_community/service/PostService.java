@@ -5,6 +5,7 @@ import com.dnghkm.high_school_community.entity.BoardType;
 import com.dnghkm.high_school_community.entity.Post;
 import com.dnghkm.high_school_community.entity.School;
 import com.dnghkm.high_school_community.entity.User;
+import com.dnghkm.high_school_community.exception.SchoolNotMatchException;
 import com.dnghkm.high_school_community.exception.UserNotMatchException;
 import com.dnghkm.high_school_community.repository.PostRepository;
 import com.dnghkm.high_school_community.repository.UserRepository;
@@ -46,7 +47,27 @@ public class PostService {
         return post;
     }
 
-    @Transactional
+    //단일 게시글 조회
+    public Post find(Long postId, String username) {
+        Post findPost = findPost(postId);
+        User findUser = findUser(username);
+        verifySchool(findPost, findUser);
+        return findPost;
+    }
+
+    //모두의 게시판 전체조회
+    public List<Post> findAllGlobal(BoardType boardType) {
+        return postRepository.findAllByBoardTypeAndDeletedIsFalse(boardType);
+    }
+
+    //학교 게시판 게시글 전체 조회
+    public List<Post> findAllSchool(String username, BoardType boardType) {
+        User user = findUser(username);
+        School findSchool = user.getSchool();
+        return postRepository.findAllBySchoolAndBoardTypeAndDeletedIsFalse(findSchool, boardType);
+    }
+
+    //게시글 수정
     public Post update(Long postId, PostDto postDto, String username) {
         Post findPost = findPost(postId);
         User user = findUser(username);
@@ -65,34 +86,6 @@ public class PostService {
             throw new UserNotMatchException();
         }
         findPost.deletePost();
-    }
-
-    //모두의 게시판 전체조회
-    public List<Post> getAllGlobalPosts(BoardType boardType) {
-        return postRepository.findAllByBoardTypeAndDeletedIsFalse(boardType);
-    }
-
-    //모두의 게시판 게시글 단일 상세조회
-    public Post getGlobalPost(Long postId, BoardType boardType) {
-        return postRepository.findByIdAndBoardTypeAndDeletedIsFalse(postId, boardType);
-    }
-
-    //학교 게시판 게시글 전체 조회
-    public List<Post> getAllSchoolPosts(String username, BoardType boardType) {
-        User user = findUser(username);
-        School findSchool = user.getSchool();
-        return postRepository.findAllBySchoolAndBoardTypeAndDeletedIsFalse(findSchool, boardType);
-    }
-
-    //모두의 게시판 게시글 단일 상세조회
-    public Post getSchoolPost(String username, Long postId, BoardType boardType) {
-        User user = findUser(username);
-        School school = user.getSchool();
-        Post post = postRepository.findByIdAndBoardTypeAndDeletedIsFalse(postId, boardType);
-        if (!post.getSchool().equals(school)) {
-            throw new RuntimeException("게시글 조회 권한이 없습니다.");
-        }
-        return post;
     }
 
     public int upvote(Long postId, String username) {
@@ -132,5 +125,14 @@ public class PostService {
     private Post findPost(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+    }
+
+    private static void verifySchool(Post findPost, User user) {
+        BoardType boardType = findPost.getBoardType();
+        if (boardType == SCHOOL || boardType == SCHOOL_ANONYMOUS) {
+            if (!user.getSchool().equals(findPost.getSchool())) {
+                throw new SchoolNotMatchException();
+            }
+        }
     }
 }

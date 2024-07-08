@@ -28,14 +28,45 @@ public class PostController {
      * }
      *  boardType = {GLOBAL, GLOBAL_ANONYMOUS, SCHOOL, SCHOOL_ANONYMOUS}
      */
-
-    //게시글의 게시판은 변경할 수 없다.
     @PostMapping
     public ResponseEntity<Post> writePost(@RequestBody PostDto postDto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return ResponseEntity.ok(postService.write(postDto, username));
     }
 
+    @GetMapping("/{postId}")
+    public ResponseEntity<Post> getPost(@PathVariable Long postId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(postService.find(postId, username));
+    }
+
+    //학교 게시판 실명게시글 전체조회
+    @GetMapping("/school")
+    public ResponseEntity<List<Post>> getAllSchoolPosts() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(postService.findAllSchool(username, BoardType.SCHOOL));
+    }
+
+    //학교 게시판 익명 게시글 전체조회
+    @GetMapping("/school/anonymous")
+    public ResponseEntity<List<Post>> getSchoolAnonymousPosts() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(postService.findAllSchool(username, BoardType.SCHOOL_ANONYMOUS));
+    }
+
+    //모두의 게시판 실명게시글 전체조회
+    @GetMapping("/global")
+    public ResponseEntity<List<Post>> getAllGlobalPosts() {
+        return ResponseEntity.ok(postService.findAllGlobal(BoardType.GLOBAL));
+    }
+
+    //모두의 게시판 익명게시글 전체조회
+    @GetMapping("/global/anonymous")
+    public ResponseEntity<List<Post>> getAllGlobalAnonymousPosts() {
+        return ResponseEntity.ok(postService.findAllGlobal(BoardType.GLOBAL_ANONYMOUS));
+    }
+
+    //게시글의 게시판은 변경할 수 없다.
     @PatchMapping("/{postId}")
     public ResponseEntity<Post> updatePost(@PathVariable Long postId, @RequestBody PostDto postDto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -49,65 +80,19 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/upvote/{postId}")
+    //추천
+    @PostMapping("/{postId}/upvote")
     public ResponseEntity<Integer> upvotePost(@PathVariable Long postId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         int vote = postService.upvote(postId, username);
         return ResponseEntity.ok(vote);
     }
 
-    @PostMapping("/downvote/{postId}")
+    //비추천
+    @PostMapping("/{postId}/downvote")
     public ResponseEntity<Integer> downvotePost(@PathVariable Long postId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         int vote = postService.downvote(postId, username);
         return ResponseEntity.ok(vote);
-    }
-
-    @GetMapping("/global")
-    public ResponseEntity<List<Post>> getAllGlobalPosts() {
-        return ResponseEntity.ok(postService.getAllGlobalPosts(BoardType.GLOBAL));
-    }
-
-    @GetMapping("/global/{postId}")
-    public ResponseEntity<Post> getGlobalPost(@PathVariable Long postId) {
-        return ResponseEntity.ok(postService.getGlobalPost(postId, BoardType.GLOBAL));
-    }
-
-    @GetMapping("/global/anonymous")
-    public ResponseEntity<List<Post>> getAllGlobalAnonymousPosts() {
-        return ResponseEntity.ok(postService.getAllGlobalPosts(BoardType.GLOBAL_ANONYMOUS));
-    }
-
-    @GetMapping("/global/anonymous/{postId}")
-    public ResponseEntity<Post> getGlobalAnonymousPost(@PathVariable Long postId) {
-        return ResponseEntity.ok(postService.getGlobalPost(postId, BoardType.GLOBAL_ANONYMOUS));
-    }
-
-    /**
-     * 학교 게시판
-     */
-
-    @GetMapping("/school")
-    public ResponseEntity<List<Post>> getAllSchoolPosts() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(postService.getAllSchoolPosts(username, BoardType.SCHOOL));
-    }
-
-    @GetMapping("/school/anonymous")
-    public ResponseEntity<List<Post>> getSchoolAnonymousPosts() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(postService.getAllSchoolPosts(username, BoardType.SCHOOL_ANONYMOUS));
-    }
-
-    @GetMapping("/school/{postId}")
-    public ResponseEntity<Post> getSchoolPost(@PathVariable Long postId) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(postService.getSchoolPost(username, postId, BoardType.SCHOOL));
-    }
-
-    @GetMapping("/school/anonymous/{postId}")
-    public ResponseEntity<Post> getSchoolAnonymousPost(@PathVariable Long postId) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(postService.getSchoolPost(username, postId, BoardType.SCHOOL_ANONYMOUS));
     }
 }
