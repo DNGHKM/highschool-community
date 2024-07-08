@@ -14,9 +14,9 @@ import java.util.List;
 
 @RestController
 @Slf4j
-@RequestMapping("/board")
+@RequestMapping("/post")
 @RequiredArgsConstructor
-public class BoardController {
+public class PostController {
     private final PostService postService;
 
     /**
@@ -52,14 +52,14 @@ public class BoardController {
     @PostMapping("/upvote/{postId}")
     public ResponseEntity<Integer> upvotePost(@PathVariable Long postId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        int vote = postService.upvotePost(postId, username);
+        int vote = postService.upvote(postId, username);
         return ResponseEntity.ok(vote);
     }
 
     @PostMapping("/downvote/{postId}")
     public ResponseEntity<Integer> downvotePost(@PathVariable Long postId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        int vote = postService.downvotePost(postId, username);
+        int vote = postService.downvote(postId, username);
         return ResponseEntity.ok(vote);
     }
 

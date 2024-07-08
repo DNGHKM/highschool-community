@@ -34,7 +34,7 @@ public class UserService {
     public User register(AuthDto.SignUp signUp) {
         String username = signUp.getUsername();
         if (userRepository.existsByUsername(username)) {
-            throw new RuntimeException("Username is already in use");
+            throw new RuntimeException("이미 사용중인 유저 이름입니다.");
         }
         User user = User.builder()
                 .username(username)
@@ -57,6 +57,9 @@ public class UserService {
     public User permit(Long userId){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다. userId = " + userId));
+        if(user.isPermit()){
+            throw new RuntimeException("이미 가입 승인 된 유저입니다.");
+        }
         user.permitUser();
         return userRepository.save(user);
     }

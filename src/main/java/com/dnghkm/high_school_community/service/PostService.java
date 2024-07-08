@@ -33,9 +33,7 @@ public class PostService {
 
     //게시글 작성
     public Post write(PostDto postDto, String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new UsernameNotFoundException("유저를 찾을 수 없습니다. username = " + username)
-        );
+        User user = findUser(username);
         Post post = Post.builder()
                 .school(user.getSchool())
                 .boardType(postDto.getBoardType())
@@ -97,7 +95,7 @@ public class PostService {
         return post;
     }
 
-    public int upvotePost(Long postId, String username) {
+    public int upvote(Long postId, String username) {
         Post findPost = findPost(postId);
         BoardType boardType = findPost.getBoardType();
         User user = findUser(username);
@@ -111,7 +109,7 @@ public class PostService {
         return findPost.getVote();
     }
 
-    public int downvotePost(Long postId, String username) {
+    public int downvote(Long postId, String username) {
         Post findPost = findPost(postId);
         BoardType boardType = findPost.getBoardType();
         User user = findUser(username);

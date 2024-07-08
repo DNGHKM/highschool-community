@@ -1,5 +1,6 @@
 package com.dnghkm.high_school_community.entity;
 
+import com.dnghkm.high_school_community.dto.CommentDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -29,10 +30,6 @@ public class Comment {
     private User user;
 
     @NotNull
-    @Column(length = 50)
-    private String title;
-
-    @NotNull
     @Column(columnDefinition = "TEXT")
     private String content;
 
@@ -45,4 +42,17 @@ public class Comment {
 
     @NotNull
     private int vote = 0;
+
+    public void updateComment(CommentDto commentDto){
+        this.content = commentDto.getContent();
+        this.updateDate = LocalDateTime.now();
+    }
+
+    public void upvote(){
+        this.vote++;
+    }
+
+    public void downVote(){
+        this.vote--;
+    }
 }

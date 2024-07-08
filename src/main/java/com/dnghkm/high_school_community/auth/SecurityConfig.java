@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .httpBasic(HttpBasicConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth", "/schools", "/").permitAll()
-                        .requestMatchers("/board/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/post/**").hasAnyRole("USER", "ADMIN")
 //                        .requestMatchers("/user/**").hasRole("ADMIN")
                         .anyRequest().permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
