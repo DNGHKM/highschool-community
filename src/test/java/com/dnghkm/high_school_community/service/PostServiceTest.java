@@ -1,10 +1,8 @@
 package com.dnghkm.high_school_community.service;
 
-import com.dnghkm.high_school_community.dto.PostDto;
-import com.dnghkm.high_school_community.entity.BoardType;
-import com.dnghkm.high_school_community.entity.Post;
-import com.dnghkm.high_school_community.entity.Role;
-import com.dnghkm.high_school_community.entity.User;
+import com.dnghkm.high_school_community.dto.PostRequestDto;
+import com.dnghkm.high_school_community.dto.PostResponseDto;
+import com.dnghkm.high_school_community.entity.*;
 import com.dnghkm.high_school_community.exception.UserNotMatchException;
 import com.dnghkm.high_school_community.repository.PostRepository;
 import com.dnghkm.high_school_community.repository.UserRepository;
@@ -39,20 +37,20 @@ class PostServiceTest {
     @DisplayName("게시글 작성")
     void write() {
         // given
-        PostDto postDto = new PostDto("테스트제목", "테스트내용", BoardType.GLOBAL);
+        PostRequestDto postRequestDto = new PostRequestDto("테스트제목", "테스트내용", BoardType.GLOBAL);
         String username = "테스트유저";
 
-        User findUser = User.builder().id(1L).username(username).role(Role.ROLE_USER).build();
+        User findUser = User.builder().id(1L).school(School.builder().build()).username(username).role(Role.ROLE_USER).build();
         given(userRepository.findByUsername(username)).willReturn(Optional.of(findUser));
 
         // when
-        Post post = postService.write(postDto, username);
+        PostResponseDto postResponseDto = postService.write(postRequestDto, username);
 
         // then
-        assertEquals(post.getTitle(), postDto.getTitle());
-        assertEquals(post.getContent(), postDto.getContent());
-        assertEquals(post.getUser().getUsername(), username);
-        assertEquals(post.getBoardType(), postDto.getBoardType());
+        assertEquals(postResponseDto.getTitle(), postRequestDto.getTitle());
+        assertEquals(postResponseDto.getContent(), postRequestDto.getContent());
+        assertEquals(postResponseDto.getUsername(), username);
+        assertEquals(postResponseDto.getBoardType(), postRequestDto.getBoardType());
     }
 
     @Test
@@ -60,7 +58,7 @@ class PostServiceTest {
     void updateSuccess() {
         // given
         Long postId = 1L;
-        PostDto postDto = new PostDto("수정제목", "수정내용", BoardType.GLOBAL);
+        PostRequestDto postRequestDto = new PostRequestDto("수정제목", "수정내용", BoardType.GLOBAL);
         String username = "테스트유저";
 
         User user = User.builder()
@@ -73,6 +71,7 @@ class PostServiceTest {
                 .title("수정 전 제목")
                 .content("수정 전 내용")
                 .user(User.builder().username(username).build())
+                .school(School.builder().build())
                 .build();
 
 
@@ -80,11 +79,11 @@ class PostServiceTest {
         given(userRepository.findByUsername(username)).willReturn(Optional.of(user));
 
         // when
-        Post updatedPost = postService.update(postId, postDto, username);
+        PostResponseDto updatedPost = postService.update(postId, postRequestDto, username);
 
         // then
-        assertEquals(updatedPost.getTitle(), postDto.getTitle());
-        assertEquals(updatedPost.getContent(), postDto.getContent());
+        assertEquals(updatedPost.getTitle(), postRequestDto.getTitle());
+        assertEquals(updatedPost.getContent(), postRequestDto.getContent());
     }
 
     @Test
@@ -92,13 +91,13 @@ class PostServiceTest {
     void updatePostNotFound() {
         // given
         Long postId = 1L;
-        PostDto postDto = new PostDto("수정제목", "수정내용", BoardType.GLOBAL);
+        PostRequestDto postRequestDto = new PostRequestDto("수정제목", "수정내용", BoardType.GLOBAL);
         String username = "테스트유저";
 
         given(postRepository.findById(postId)).willReturn(Optional.empty());
 
         // when & then
-        assertThrows(EntityNotFoundException.class, () -> postService.update(postId, postDto, username));
+        assertThrows(EntityNotFoundException.class, () -> postService.update(postId, postRequestDto, username));
     }
 
     @Test
@@ -106,7 +105,7 @@ class PostServiceTest {
     void updateUserNotFound() {
         // given
         Long postId = 1L;
-        PostDto postDto = new PostDto("수정제목", "수정내용", BoardType.GLOBAL);
+        PostRequestDto postRequestDto = new PostRequestDto("수정제목", "수정내용", BoardType.GLOBAL);
         String username = "테스트유저";
         Post postBeforeUpdate = Post.builder()
                 .id(postId)
@@ -119,7 +118,7 @@ class PostServiceTest {
         given(userRepository.findByUsername(username)).willReturn(Optional.empty());
 
         // when & then
-        assertThrows(UsernameNotFoundException.class, () -> postService.update(postId, postDto, username));
+        assertThrows(UsernameNotFoundException.class, () -> postService.update(postId, postRequestDto, username));
     }
 
     @Test
@@ -127,7 +126,7 @@ class PostServiceTest {
     void updateUserNotMatch() {
         // given
         Long postId = 1L;
-        PostDto postDto = new PostDto("수정제목", "수정내용", BoardType.GLOBAL);
+        PostRequestDto postRequestDto = new PostRequestDto("수정제목", "수정내용", BoardType.GLOBAL);
         String writeUsername = "작성유저";
         String anotherUsername = "다른유저";
 
@@ -154,7 +153,7 @@ class PostServiceTest {
         given(userRepository.findByUsername(anotherUsername)).willReturn(Optional.of(anotherUser));
 
         // when & then
-        assertThrows(UserNotMatchException.class, () -> postService.update(postId, postDto, anotherUsername));
+        assertThrows(UserNotMatchException.class, () -> postService.update(postId, postRequestDto, anotherUsername));
     }
 
 //    @Test

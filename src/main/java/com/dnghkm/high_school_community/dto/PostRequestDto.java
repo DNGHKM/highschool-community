@@ -8,7 +8,7 @@ import lombok.Data;
 @Builder
 @Data
 @AllArgsConstructor
-public class PostDto {
+public class PostRequestDto {
     private String title;
     private String content;
     private BoardType boardType;

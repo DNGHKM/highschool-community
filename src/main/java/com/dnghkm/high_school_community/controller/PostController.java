@@ -1,8 +1,8 @@
 package com.dnghkm.high_school_community.controller;
 
-import com.dnghkm.high_school_community.dto.PostDto;
+import com.dnghkm.high_school_community.dto.PostRequestDto;
+import com.dnghkm.high_school_community.dto.PostResponseDto;
 import com.dnghkm.high_school_community.entity.BoardType;
-import com.dnghkm.high_school_community.entity.Post;
 import com.dnghkm.high_school_community.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,48 +29,48 @@ public class PostController {
      *  boardType = {GLOBAL, GLOBAL_ANONYMOUS, SCHOOL, SCHOOL_ANONYMOUS}
      */
     @PostMapping
-    public ResponseEntity<Post> writePost(@RequestBody PostDto postDto) {
+    public ResponseEntity<PostResponseDto> writePost(@RequestBody PostRequestDto postRequestDto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(postService.write(postDto, username));
+        return ResponseEntity.ok(postService.write(postRequestDto, username));
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<Post> getPost(@PathVariable Long postId) {
+    public ResponseEntity<PostResponseDto> getPost(@PathVariable Long postId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return ResponseEntity.ok(postService.find(postId, username));
     }
 
     //학교 게시판 실명게시글 전체조회
     @GetMapping("/school")
-    public ResponseEntity<List<Post>> getAllSchoolPosts() {
+    public ResponseEntity<List<PostResponseDto>> getAllSchoolPosts() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return ResponseEntity.ok(postService.findAllSchool(username, BoardType.SCHOOL));
     }
 
     //학교 게시판 익명 게시글 전체조회
     @GetMapping("/school/anonymous")
-    public ResponseEntity<List<Post>> getSchoolAnonymousPosts() {
+    public ResponseEntity<List<PostResponseDto>> getSchoolAnonymousPosts() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return ResponseEntity.ok(postService.findAllSchool(username, BoardType.SCHOOL_ANONYMOUS));
     }
 
     //모두의 게시판 실명게시글 전체조회
     @GetMapping("/global")
-    public ResponseEntity<List<Post>> getAllGlobalPosts() {
+    public ResponseEntity<List<PostResponseDto>> getAllGlobalPosts() {
         return ResponseEntity.ok(postService.findAllGlobal(BoardType.GLOBAL));
     }
 
     //모두의 게시판 익명게시글 전체조회
     @GetMapping("/global/anonymous")
-    public ResponseEntity<List<Post>> getAllGlobalAnonymousPosts() {
+    public ResponseEntity<List<PostResponseDto>> getAllGlobalAnonymousPosts() {
         return ResponseEntity.ok(postService.findAllGlobal(BoardType.GLOBAL_ANONYMOUS));
     }
 
     //게시글의 게시판은 변경할 수 없다.
     @PatchMapping("/{postId}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long postId, @RequestBody PostDto postDto) {
+    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto postRequestDto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(postService.update(postId, postDto, username));
+        return ResponseEntity.ok(postService.update(postId, postRequestDto, username));
     }
 
     @DeleteMapping("/{postId}")

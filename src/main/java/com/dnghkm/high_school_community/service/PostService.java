@@ -1,6 +1,7 @@
 package com.dnghkm.high_school_community.service;
 
-import com.dnghkm.high_school_community.dto.PostDto;
+import com.dnghkm.high_school_community.dto.PostRequestDto;
+import com.dnghkm.high_school_community.dto.PostResponseDto;
 import com.dnghkm.high_school_community.entity.BoardType;
 import com.dnghkm.high_school_community.entity.Post;
 import com.dnghkm.high_school_community.entity.School;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.dnghkm.high_school_community.entity.BoardType.SCHOOL;
 import static com.dnghkm.high_school_community.entity.BoardType.SCHOOL_ANONYMOUS;
@@ -33,49 +35,51 @@ public class PostService {
      */
 
     //게시글 작성
-    public Post write(PostDto postDto, String username) {
+    public PostResponseDto write(PostRequestDto postRequestDto, String username) {
         User user = findUser(username);
         Post post = Post.builder()
                 .school(user.getSchool())
-                .boardType(postDto.getBoardType())
+                .boardType(postRequestDto.getBoardType())
                 .user(user)
-                .title(postDto.getTitle())
-                .content(postDto.getContent())
+                .title(postRequestDto.getTitle())
+                .content(postRequestDto.getContent())
                 .createDate(LocalDateTime.now())
                 .updateDate(LocalDateTime.now()).build();
         postRepository.save(post);
-        return post;
+        return new PostResponseDto(post);
     }
 
     //단일 게시글 조회
-    public Post find(Long postId, String username) {
+    public PostResponseDto find(Long postId, String username) {
         Post findPost = findPost(postId);
         User findUser = findUser(username);
         verifySchool(findPost, findUser);
-        return findPost;
+        return new PostResponseDto(findPost);
     }
 
     //모두의 게시판 전체조회
-    public List<Post> findAllGlobal(BoardType boardType) {
-        return postRepository.findAllByBoardTypeAndDeletedIsFalse(boardType);
+    public List<PostResponseDto> findAllGlobal(BoardType boardType) {
+        List<Post> findList = postRepository.findAllByBoardTypeAndDeletedIsFalse(boardType);
+        return findList.stream().map(PostResponseDto::new).collect(Collectors.toList());
     }
 
     //학교 게시판 게시글 전체 조회
-    public List<Post> findAllSchool(String username, BoardType boardType) {
+    public List<PostResponseDto> findAllSchool(String username, BoardType boardType) {
         User user = findUser(username);
         School findSchool = user.getSchool();
-        return postRepository.findAllBySchoolAndBoardTypeAndDeletedIsFalse(findSchool, boardType);
+        List<Post> findList = postRepository.findAllBySchoolAndBoardTypeAndDeletedIsFalse(findSchool, boardType);
+        return findList.stream().map(PostResponseDto::new).collect(Collectors.toList());
     }
 
     //게시글 수정
-    public Post update(Long postId, PostDto postDto, String username) {
+    public PostResponseDto update(Long postId, PostRequestDto postRequestDto, String username) {
         Post findPost = findPost(postId);
         User user = findUser(username);
         if (!findPost.getUser().equals(user)) {
             throw new UserNotMatchException();
         }
-        findPost.updatePost(postDto);
-        return findPost;
+        findPost.updatePost(postRequestDto);
+        return new PostResponseDto(findPost);
     }
 
     //게시글 삭제
