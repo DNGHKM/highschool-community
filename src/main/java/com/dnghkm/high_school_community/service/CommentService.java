@@ -54,7 +54,7 @@ public class CommentService {
         User findUser = findUser(username);
         Post findPost = findPost(postId);
         verifySchool(findPost, findUser);
-        List<Comment> findList = commentRepository.findAllByPostId(postId);
+        List<Comment> findList = commentRepository.findAllByPostIdOrderByCreatedDateDesc(postId);
         return findList.stream().map(CommentResponseDto::new).collect(Collectors.toList());
     }
 

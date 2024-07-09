@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 public class PostResponseDto {
+    private Long id;
     private String title;
     private String content;
     private BoardType boardType;
@@ -22,6 +23,7 @@ public class PostResponseDto {
     private int vote;
 
     public PostResponseDto(Post post) {
+        this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.boardType = post.getBoardType();

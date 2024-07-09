@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentResponseDto {
+    private Long id;
     private Long postId;
     private String content;
     private String username;
@@ -21,6 +22,7 @@ public class CommentResponseDto {
     private int vote;
 
     public CommentResponseDto(Comment comment) {
+        this.id = comment.getId();
         this.postId = comment.getPost().getId();
         this.content = comment.getContent();
         this.username = comment.getUser().getUsername();
