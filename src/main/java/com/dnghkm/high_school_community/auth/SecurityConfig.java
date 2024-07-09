@@ -41,6 +41,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth", "/schools", "/").permitAll()
                         .requestMatchers("/post/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/comment/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/meal/**").hasAnyRole("USER", "ADMIN")
 //                        .requestMatchers("/user/**").hasRole("ADMIN")
                         .anyRequest().permitAll())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
