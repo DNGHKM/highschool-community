@@ -1,6 +1,7 @@
 package com.dnghkm.high_school_community.service;
 
-import com.dnghkm.high_school_community.dto.CommentDto;
+import com.dnghkm.high_school_community.dto.CommentRequestDto;
+import com.dnghkm.high_school_community.dto.CommentResponseDto;
 import com.dnghkm.high_school_community.entity.BoardType;
 import com.dnghkm.high_school_community.entity.Comment;
 import com.dnghkm.high_school_community.entity.Post;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.dnghkm.high_school_community.entity.BoardType.SCHOOL;
 import static com.dnghkm.high_school_community.entity.BoardType.SCHOOL_ANONYMOUS;
@@ -31,31 +33,33 @@ public class CommentService {
     private final PostRepository postRepository;
 
     //댓글 작성
-    public Comment write(Long postId, CommentDto commentDto, String username) {
+    public CommentResponseDto write(Long postId, CommentRequestDto commentRequestDto, String username) {
         User findUser = findUser(username);
         Post findPost = findPost(postId);
         verifySchool(findPost, findUser);
         Comment comment = Comment.builder()
                 .post(findPost)
                 .user(findUser)
-                .content(commentDto.getContent())
+                .content(commentRequestDto.getContent())
                 .createdDate(LocalDateTime.now())
                 .updateDate(LocalDateTime.now())
                 .vote(0)
                 .build();
-        return commentRepository.save(comment);
+        commentRepository.save(comment);
+        return new CommentResponseDto(comment);
     }
 
     //댓글 조회
-    public List<Comment> find(Long postId, String username) {
+    public List<CommentResponseDto> find(Long postId, String username) {
         User findUser = findUser(username);
         Post findPost = findPost(postId);
         verifySchool(findPost, findUser);
-        return commentRepository.findAllByPostId(postId);
+        List<Comment> findList = commentRepository.findAllByPostId(postId);
+        return findList.stream().map(CommentResponseDto::new).collect(Collectors.toList());
     }
 
     //댓글 수정
-    public Comment update(Long postId, Long commentId, CommentDto commentDto, String username) {
+    public CommentResponseDto update(Long postId, Long commentId, CommentRequestDto commentRequestDto, String username) {
         User findUser = findUser(username);
         Post findPost = findPost(postId);
         verifySchool(findPost, findUser);
@@ -63,8 +67,8 @@ public class CommentService {
             throw new UserNotMatchException();
         }
         Comment comment = findComment(commentId);
-        comment.updateComment(commentDto);
-        return comment;
+        comment.updateComment(commentRequestDto);
+        return new CommentResponseDto(comment);
     }
 
     //댓글 삭제

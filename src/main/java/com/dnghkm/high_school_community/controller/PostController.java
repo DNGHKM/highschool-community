@@ -73,6 +73,7 @@ public class PostController {
         return ResponseEntity.ok(postService.update(postId, postRequestDto, username));
     }
 
+    //게시글 삭제
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();

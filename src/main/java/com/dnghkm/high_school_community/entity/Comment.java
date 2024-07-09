@@ -1,6 +1,6 @@
 package com.dnghkm.high_school_community.entity;
 
-import com.dnghkm.high_school_community.dto.CommentDto;
+import com.dnghkm.high_school_community.dto.CommentRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -43,8 +43,8 @@ public class Comment {
     @NotNull
     private int vote = 0;
 
-    public void updateComment(CommentDto commentDto){
-        this.content = commentDto.getContent();
+    public void updateComment(CommentRequestDto commentRequestDto){
+        this.content = commentRequestDto.getContent();
         this.updateDate = LocalDateTime.now();
     }
 

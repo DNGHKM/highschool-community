@@ -1,7 +1,7 @@
 package com.dnghkm.high_school_community.controller;
 
-import com.dnghkm.high_school_community.dto.CommentDto;
-import com.dnghkm.high_school_community.entity.Comment;
+import com.dnghkm.high_school_community.dto.CommentRequestDto;
+import com.dnghkm.high_school_community.dto.CommentResponseDto;
 import com.dnghkm.high_school_community.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,21 +19,21 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping
-    public ResponseEntity<List<Comment>> getComments(@PathVariable Long postId) {
+    public ResponseEntity<List<CommentResponseDto>> getComments(@PathVariable Long postId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return ResponseEntity.ok(commentService.find(postId, username));
     }
 
     @PostMapping
-    public ResponseEntity<Comment> writeComment(@PathVariable Long postId, @RequestBody CommentDto commentDto) {
+    public ResponseEntity<CommentResponseDto> writeComment(@PathVariable Long postId, @RequestBody CommentRequestDto commentRequestDto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(commentService.write(postId, commentDto, username));
+        return ResponseEntity.ok(commentService.write(postId, commentRequestDto, username));
     }
 
     @PatchMapping("/{commentId}")
-    public ResponseEntity<Comment> updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentDto commentDto) {
+    public ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentRequestDto commentRequestDto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(commentService.update(postId, commentId, commentDto, username));
+        return ResponseEntity.ok(commentService.update(postId, commentId, commentRequestDto, username));
     }
 
     @DeleteMapping("/{commentId}")
