@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.dnghkm.high_school_community.entity.BoardType.SCHOOL;
@@ -57,9 +58,49 @@ public class PostService {
         return new PostResponseDto(findPost);
     }
 
+    //게시글 검색
+    public List<PostResponseDto> searchPosts(String keyword, BoardType boardType, String searchType, String username) {
+        if (boardType.toString().contains("ANONYMOUS") && searchType.equals("author")) {
+            throw new RuntimeException("익명 게시판은 작성자로 검색할 수 없습니다.");
+        }
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new EntityNotFoundException("유저를 찾을 수 없습니다.")
+        );
+        if (boardType == BoardType.SCHOOL || boardType == BoardType.SCHOOL_ANONYMOUS) {
+            return searchBySchool(keyword, boardType, searchType, user);
+        } else {
+            return searchByGlobal(keyword, boardType, searchType);
+        }
+    }
+
+    //게시글 검색 - 공통게시판
+    private List<PostResponseDto> searchByGlobal(String keyword, BoardType boardType, String searchType) {
+        List<Post> findPosts;
+        switch (searchType.toLowerCase()) {
+            case "title" -> findPosts = postRepository.findByTitle(keyword, boardType);
+            case "content" -> findPosts = postRepository.findByContent(keyword, boardType);
+            case "author" -> findPosts = postRepository.findByAuthor(keyword, boardType);
+            default -> throw new IllegalArgumentException("잘못된 검색 유형입니다.");
+        }
+        return findPosts.stream().map(PostResponseDto::new).collect(Collectors.toList());
+    }
+
+    //게시글 검색 - 학교게시판
+    private List<PostResponseDto> searchBySchool(String keyword, BoardType boardType, String searchType, User user) {
+        List<Post> findPosts;
+        switch (searchType.toLowerCase()) {
+            case "title" -> findPosts = postRepository.findByTitleAndSchool(keyword, boardType, user.getSchool());
+            case "content" -> findPosts = postRepository.findByContentAndSchool(keyword, boardType, user.getSchool());
+            case "author" -> findPosts = postRepository.findByAuthorAndSchool(keyword, boardType, user.getSchool());
+            default -> throw new IllegalArgumentException("잘못된 검색 유형입니다.");
+        }
+        return findPosts.stream().map(PostResponseDto::new).collect(Collectors.toList());
+    }
+
+
     //모두의 게시판 전체조회
     public List<PostResponseDto> findAllGlobal(BoardType boardType) {
-        List<Post> findList = postRepository.findAllByBoardTypeAndDeletedIsFalse(boardType);
+        List<Post> findList = postRepository.findAllByBoardType(boardType);
         return findList.stream().map(PostResponseDto::new).collect(Collectors.toList());
     }
 
@@ -67,7 +108,7 @@ public class PostService {
     public List<PostResponseDto> findAllSchool(String username, BoardType boardType) {
         User user = findUser(username);
         School findSchool = user.getSchool();
-        List<Post> findList = postRepository.findAllBySchoolAndBoardTypeAndDeletedIsFalse(findSchool, boardType);
+        List<Post> findList = postRepository.findAllBySchoolAndBoardType(findSchool, boardType);
         return findList.stream().map(PostResponseDto::new).collect(Collectors.toList());
     }
 
@@ -127,8 +168,11 @@ public class PostService {
     }
 
     private Post findPost(Long postId) {
-        return postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+        Optional<Post> post = postRepository.findById(postId);
+        if (post.isEmpty() || post.get().isDeleted()) {
+            throw new RuntimeException("게시글이 존재하지 않습니다.");
+        }
+        return post.get();
     }
 
     private static void verifySchool(Post findPost, User user) {

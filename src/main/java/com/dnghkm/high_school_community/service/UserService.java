@@ -39,7 +39,7 @@ public class UserService {
         User user = User.builder()
                 .username(username)
                 .password(passwordEncoder.encode(signUp.getPassword()))
-                .name(signUp.getName())
+                .name(signUp.getName().toLowerCase())
                 .role(Role.ROLE_TEMP)
                 .phone(signUp.getPhone().replaceAll("-",""))
                 .email(signUp.getEmail())

@@ -22,18 +22,20 @@ public class PostController {
     /**
      * json example
      * {
-     *     "title":"테스트제목",
-     *     "content" : "테스트 내용입니다 123123",
-     *     "boardType" : "GLOBAL"
+     * "title":"테스트제목",
+     * "content" : "테스트 내용입니다 123123",
+     * "boardType" : "GLOBAL"
      * }
-     *  boardType = {GLOBAL, GLOBAL_ANONYMOUS, SCHOOL, SCHOOL_ANONYMOUS}
+     * boardType = {GLOBAL, GLOBAL_ANONYMOUS, SCHOOL, SCHOOL_ANONYMOUS}
      */
+
     @PostMapping
     public ResponseEntity<PostResponseDto> writePost(@RequestBody PostRequestDto postRequestDto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return ResponseEntity.ok(postService.write(postRequestDto, username));
     }
 
+    //게시글 상세조회
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponseDto> getPost(@PathVariable Long postId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -64,6 +66,19 @@ public class PostController {
     @GetMapping("/global/anonymous")
     public ResponseEntity<List<PostResponseDto>> getAllGlobalAnonymousPosts() {
         return ResponseEntity.ok(postService.findAllGlobal(BoardType.GLOBAL_ANONYMOUS));
+    }
+
+    //게시글 검색
+    // 예시) http://localhost:8080/post/search?keyword=테스트제목&boardType=GLOBAL&searchType=title
+
+    @GetMapping("/search")
+    public ResponseEntity<List<PostResponseDto>> searchPosts(
+            @RequestParam String keyword,
+            @RequestParam BoardType boardType,
+            @RequestParam String searchType) {  // 제목, 내용, 작성자 중 하나
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<PostResponseDto> posts = postService.searchPosts(keyword, boardType, searchType, username);
+        return ResponseEntity.ok(posts);
     }
 
     //게시글의 게시판은 변경할 수 없다.

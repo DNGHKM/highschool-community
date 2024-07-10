@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.dnghkm.high_school_community.entity.BoardType.SCHOOL;
@@ -110,8 +111,11 @@ public class CommentService {
     }
 
     private Post findPost(Long postId) {
-        return postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+        Optional<Post> post = postRepository.findById(postId);
+        if(post.isEmpty() || post.get().isDeleted()){
+            throw new RuntimeException("게시글이 존재하지 않습니다.");
+        }
+        return post.get();
     }
 
     private Comment findComment(Long commentId) {
