@@ -47,6 +47,10 @@ public class Post {
     private LocalDateTime updateDate;
 
     @NotNull
+    @Column(name = "number_comments")
+    private int numberComments = 0;
+
+    @NotNull
     private int vote = 0;
 
     @NotNull
@@ -68,4 +72,8 @@ public class Post {
     public void downVote(){
         this.vote--;
     }
+    public void addComments(){
+        this.numberComments++;
+    }
+    public void deleteComments(){this.numberComments--;}
 }

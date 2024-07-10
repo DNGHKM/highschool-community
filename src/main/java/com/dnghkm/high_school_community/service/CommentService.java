@@ -37,6 +37,7 @@ public class CommentService {
     public CommentResponseDto write(Long postId, CommentRequestDto commentRequestDto, String username) {
         User findUser = findUser(username);
         Post findPost = findPost(postId);
+        findPost.addComments();
         verifySchool(findPost, findUser);
         Comment comment = Comment.builder()
                 .post(findPost)
@@ -44,7 +45,6 @@ public class CommentService {
                 .content(commentRequestDto.getContent())
                 .createdDate(LocalDateTime.now())
                 .updateDate(LocalDateTime.now())
-                .vote(0)
                 .build();
         commentRepository.save(comment);
         return new CommentResponseDto(comment);
@@ -76,6 +76,7 @@ public class CommentService {
     public void delete(Long postId, Long commentId, String username) {
         User findUser = findUser(username);
         Post findPost = findPost(postId);
+        findPost.deleteComments();
         verifySchool(findPost, findUser);
         if (!findUser.equals(findPost.getUser())) {
             throw new UserNotMatchException();

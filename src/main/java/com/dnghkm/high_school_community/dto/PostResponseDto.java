@@ -20,6 +20,7 @@ public class PostResponseDto {
     private String username;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
+    private int numberComments;
     private int vote;
 
     public PostResponseDto(Post post) {
@@ -31,6 +32,7 @@ public class PostResponseDto {
         this.username = post.getUser().getUsername();
         this.createDate = post.getCreateDate();
         this.updateDate = post.getUpdateDate();
+        this.numberComments = post.getNumberComments();
         this.vote = post.getVote();
     }
 }

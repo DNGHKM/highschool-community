@@ -20,7 +20,7 @@ public class PostController {
     private final PostService postService;
 
     /**
-     * json example
+     * 예시)
      * {
      * "title":"테스트제목",
      * "content" : "테스트 내용입니다 123123",
