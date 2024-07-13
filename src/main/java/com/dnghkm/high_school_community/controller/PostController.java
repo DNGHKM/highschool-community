@@ -14,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @Slf4j
 @RequestMapping("/post")
@@ -56,14 +54,15 @@ public class PostController {
 
     //게시글 검색
     // 예시) http://localhost:8080/post/search?keyword=테스트제목&boardType=GLOBAL&searchType=title
-
+    // searchType -> 제목(title), 내용(content), 작성자(author) 중 하나
     @GetMapping("/search")
-    public ResponseEntity<List<PostResponseDto>> searchPosts(
+    public ResponseEntity<Page<PostResponseDto>> searchPosts(
             @RequestParam String keyword,
             @RequestParam BoardType boardType,
-            @RequestParam String searchType) {  // 제목, 내용, 작성자 중 하나
+            @RequestParam String searchType,
+            @PageableDefault(sort = "createDate", direction = Sort.Direction.DESC) Pageable pageable) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<PostResponseDto> posts = postService.searchPosts(keyword, boardType, searchType, username);
+        Page<PostResponseDto> posts = postService.searchPosts(keyword, boardType, searchType, username, pageable);
         return ResponseEntity.ok(posts);
     }
 

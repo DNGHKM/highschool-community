@@ -9,8 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-
 public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.boardType = :boardType AND p.deleted = false ORDER BY p.createDate DESC")
     Page<Post> findAllByBoardType(
@@ -23,33 +21,33 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     );
 
     @Query("SELECT p FROM Post p WHERE p.title LIKE %:keyword% AND p.boardType = :boardType AND p.deleted = false ORDER BY p.createDate DESC")
-    List<Post> findByTitle(
-            @Param("keyword") String keyword, @Param("boardType") BoardType boardType
+    Page<Post> findByTitle(
+            @Param("keyword") String keyword, @Param("boardType") BoardType boardType, Pageable pageable
     );
 
     @Query("SELECT p FROM Post p WHERE p.content LIKE %:keyword% AND p.boardType = :boardType AND p.deleted = false ORDER BY p.createDate DESC")
-    List<Post> findByContent(
-            @Param("keyword") String keyword, @Param("boardType") BoardType boardType
+    Page<Post> findByContent(
+            @Param("keyword") String keyword, @Param("boardType") BoardType boardType, Pageable pageable
     );
 
     @Query("SELECT p FROM Post p WHERE p.user.name LIKE %:keyword% AND p.boardType = :boardType AND p.deleted = false ORDER BY p.createDate DESC")
-    List<Post> findByAuthor(
-            @Param("keyword") String keyword, @Param("boardType") BoardType boardType
+    Page<Post> findByAuthor(
+            @Param("keyword") String keyword, @Param("boardType") BoardType boardType, Pageable pageable
     );
 
     @Query("SELECT p FROM Post p WHERE p.title LIKE %:keyword% AND p.boardType = :boardType AND p.school = :school AND p.deleted = false ORDER BY p.createDate DESC")
-    List<Post> findByTitleAndSchool(
-            @Param("keyword") String keyword, @Param("boardType") BoardType boardType, @Param("school") School school
+    Page<Post> findByTitleAndSchool(
+            @Param("keyword") String keyword, @Param("boardType") BoardType boardType, @Param("school") School school, Pageable pageable
     );
 
     @Query("SELECT p FROM Post p WHERE p.content LIKE %:keyword% AND p.boardType = :boardType AND p.school = :school AND p.deleted = false ORDER BY p.createDate DESC")
-    List<Post> findByContentAndSchool(
-            @Param("keyword") String keyword, @Param("boardType") BoardType boardType, @Param("school") School school
+    Page<Post> findByContentAndSchool(
+            @Param("keyword") String keyword, @Param("boardType") BoardType boardType, @Param("school") School school, Pageable pageable
     );
 
     @Query("SELECT p FROM Post p WHERE p.user.name LIKE %:keyword% AND p.boardType = :boardType AND p.school = :school AND p.deleted = false ORDER BY p.createDate DESC")
-    List<Post> findByAuthorAndSchool(
-            @Param("keyword") String keyword, @Param("boardType") BoardType boardType, @Param("school") School school
+    Page<Post> findByAuthorAndSchool(
+            @Param("keyword") String keyword, @Param("boardType") BoardType boardType, @Param("school") School school, Pageable pageable
     );
 
 }

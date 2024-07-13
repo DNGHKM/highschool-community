@@ -77,42 +77,44 @@ public class PostService {
     }
 
     //게시글 검색
-    public List<PostResponseDto> searchPosts(String keyword, BoardType boardType, String searchType, String username) {
+    public Page<PostResponseDto> searchPosts(
+            String keyword, BoardType boardType, String searchType, String username, Pageable pageable) {
         if (boardType.toString().contains("ANONYMOUS") && searchType.equals("author")) {
             throw new RuntimeException("익명 게시판은 작성자로 검색할 수 없습니다.");
         }
-        User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new UsernameNotFoundException("유저를 찾을 수 없습니다.")
-        );
+        User user = findUser(username);
+
         if (boardType.toString().contains(SCHOOL)) {
-            return searchBySchool(keyword, boardType, searchType, user);
+            return searchBySchool(keyword, boardType, searchType, user, pageable);
         } else {
-            return searchByGlobal(keyword, boardType, searchType);
+            return searchByGlobal(keyword, boardType, searchType, pageable);
         }
     }
 
     //게시글 검색 - 공통게시판
-    private List<PostResponseDto> searchByGlobal(String keyword, BoardType boardType, String searchType) {
-        List<Post> findPosts;
+    private Page<PostResponseDto> searchByGlobal(String keyword, BoardType boardType, String searchType, Pageable pageable) {
+        Page<Post> findPage;
         switch (searchType.toLowerCase()) {
-            case "title" -> findPosts = postRepository.findByTitle(keyword, boardType);
-            case "content" -> findPosts = postRepository.findByContent(keyword, boardType);
-            case "author" -> findPosts = postRepository.findByAuthor(keyword, boardType);
+            case "title" -> findPage = postRepository.findByTitle(keyword, boardType, pageable);
+            case "content" -> findPage = postRepository.findByContent(keyword, boardType, pageable);
+            case "author" -> findPage = postRepository.findByAuthor(keyword, boardType, pageable);
             default -> throw new IllegalArgumentException("잘못된 검색 유형입니다.");
         }
-        return findPosts.stream().map(PostResponseDto::new).collect(Collectors.toList());
+        List<PostResponseDto> responseDtos = findPage.stream().map(PostResponseDto::new).collect(Collectors.toList());
+        return new PageImpl<>(responseDtos, pageable, findPage.getTotalElements());
     }
 
     //게시글 검색 - 학교게시판
-    private List<PostResponseDto> searchBySchool(String keyword, BoardType boardType, String searchType, User user) {
-        List<Post> findPosts;
+    private Page<PostResponseDto> searchBySchool(String keyword, BoardType boardType, String searchType, User user, Pageable pageable) {
+        Page<Post> findPage;
         switch (searchType.toLowerCase()) {
-            case "title" -> findPosts = postRepository.findByTitleAndSchool(keyword, boardType, user.getSchool());
-            case "content" -> findPosts = postRepository.findByContentAndSchool(keyword, boardType, user.getSchool());
-            case "author" -> findPosts = postRepository.findByAuthorAndSchool(keyword, boardType, user.getSchool());
+            case "title" -> findPage = postRepository.findByTitleAndSchool(keyword, boardType, user.getSchool(), pageable);
+            case "content" -> findPage = postRepository.findByContentAndSchool(keyword, boardType, user.getSchool(), pageable);
+            case "author" -> findPage = postRepository.findByAuthorAndSchool(keyword, boardType, user.getSchool(), pageable);
             default -> throw new IllegalArgumentException("잘못된 검색 유형입니다.");
         }
-        return findPosts.stream().map(PostResponseDto::new).collect(Collectors.toList());
+        List<PostResponseDto> responseDtos = findPage.stream().map(PostResponseDto::new).collect(Collectors.toList());
+        return new PageImpl<>(responseDtos, pageable, findPage.getTotalElements());
     }
 
 
