@@ -1,5 +1,8 @@
-package com.dnghkm.high_school_community.auth;
+package com.dnghkm.high_school_community.config;
 
+import com.dnghkm.high_school_community.auth.JwtAuthorizationFilter;
+import com.dnghkm.high_school_community.auth.JwtFilter;
+import com.dnghkm.high_school_community.auth.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
