@@ -13,6 +13,9 @@ import com.dnghkm.high_school_community.repository.PostRepository;
 import com.dnghkm.high_school_community.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +46,7 @@ public class CommentService {
                 .post(findPost)
                 .user(findUser)
                 .content(commentRequestDto.getContent())
-                .createdDate(LocalDateTime.now())
+                .createDate(LocalDateTime.now())
                 .updateDate(LocalDateTime.now())
                 .build();
         commentRepository.save(comment);
@@ -51,12 +54,17 @@ public class CommentService {
     }
 
     //댓글 조회
-    public List<CommentResponseDto> find(Long postId, String username) {
+    public Page<CommentResponseDto> find(Long postId, String username, Pageable pageable) {
         User findUser = findUser(username);
         Post findPost = findPost(postId);
         verifySchool(findPost, findUser);
-        List<Comment> findList = commentRepository.findAllByPostIdOrderByCreatedDateDesc(postId);
-        return findList.stream().map(CommentResponseDto::new).collect(Collectors.toList());
+        Page<Comment> findPage = commentRepository.findAllByPostIdOrderByCreateDateDesc(postId, pageable);
+
+        List<CommentResponseDto> responseDtos = findPage.stream()
+                .map(CommentResponseDto::new)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(responseDtos, pageable, findPage.getTotalElements());
     }
 
     //댓글 수정

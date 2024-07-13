@@ -6,6 +6,10 @@ import com.dnghkm.high_school_community.entity.BoardType;
 import com.dnghkm.high_school_community.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -41,11 +45,13 @@ public class PostController {
     }
 
     //게시글 리스트 조회
-    // 예시) http://localhost:8080/board?boardType=GLOBAL
+    // 예시) http://localhost:8080/post?boardType=GLOBAL&page=1
     @GetMapping
-    public ResponseEntity<List<PostResponseDto>> getAllPosts(@RequestParam BoardType boardType) {
+    public ResponseEntity<Page<PostResponseDto>> getAllPosts(
+            @RequestParam BoardType boardType,
+            @PageableDefault(sort = "createDate", direction = Sort.Direction.DESC) Pageable pageable) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(postService.findAllPosts(username, boardType));
+        return ResponseEntity.ok(postService.findAllPosts(username, boardType, pageable));
     }
 
     //게시글 검색

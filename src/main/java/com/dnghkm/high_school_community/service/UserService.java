@@ -7,6 +7,8 @@ import com.dnghkm.high_school_community.repository.SchoolRepository;
 import com.dnghkm.high_school_community.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +25,8 @@ public class UserService {
     private final SchoolRepository schoolRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public List<User> getAllUser(){
-        return userRepository.findAll();
+    public Page<User> getAllUser(Pageable pageable){
+        return userRepository.findAll(pageable);
     }
 
     public User getUserById(Long id){

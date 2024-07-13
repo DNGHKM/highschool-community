@@ -11,6 +11,9 @@ import com.dnghkm.high_school_community.exception.UserNotMatchException;
 import com.dnghkm.high_school_community.repository.PostRepository;
 import com.dnghkm.high_school_community.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,15 +51,21 @@ public class PostService {
     }
 
     //게시글 리스트 조회
-    public List<PostResponseDto> findAllPosts(String username, BoardType boardType) {
+    public Page<PostResponseDto> findAllPosts(String username, BoardType boardType, Pageable pageable) {
         User user = findUser(username);
-        List<Post> findList;
+        Page<Post> findPage;
+
         if (boardType.toString().contains(SCHOOL)) {
-            findList = postRepository.findAllBySchoolAndBoardType(user.getSchool(), boardType);
+            findPage = postRepository.findAllBySchoolAndBoardType(user.getSchool(), boardType, pageable);
         } else {
-            findList = postRepository.findAllByBoardType(boardType);
+            findPage = postRepository.findAllByBoardType(boardType, pageable);
         }
-        return findList.stream().map(PostResponseDto::new).collect(Collectors.toList());
+
+        List<PostResponseDto> responseDtos = findPage.stream()
+                .map(PostResponseDto::new)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(responseDtos, pageable, findPage.getTotalElements());
     }
 
     //단일 게시글 조회

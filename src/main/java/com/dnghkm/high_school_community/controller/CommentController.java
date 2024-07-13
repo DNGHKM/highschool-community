@@ -5,11 +5,13 @@ import com.dnghkm.high_school_community.dto.CommentResponseDto;
 import com.dnghkm.high_school_community.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -19,9 +21,11 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping
-    public ResponseEntity<List<CommentResponseDto>> getComments(@PathVariable Long postId) {
+    public ResponseEntity<Page<CommentResponseDto>> getComments(
+            @PathVariable Long postId,
+            @PageableDefault(sort = "createDate", direction = Sort.Direction.DESC) Pageable pageable) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(commentService.find(postId, username));
+        return ResponseEntity.ok(commentService.find(postId, username, pageable));
     }
 
     @PostMapping

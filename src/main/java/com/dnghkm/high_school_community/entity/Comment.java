@@ -35,7 +35,7 @@ public class Comment {
 
     @NotNull
     @Column(name = "create_date")
-    private LocalDateTime createdDate = LocalDateTime.now();
+    private LocalDateTime createDate = LocalDateTime.now();
 
     @Column(name = "update_date")
     private LocalDateTime updateDate;
