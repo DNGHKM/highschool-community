@@ -26,9 +26,7 @@ public class PostController {
      * "content" : "테스트 내용입니다 123123",
      * "boardType" : "GLOBAL"
      * }
-     * boardType = {GLOBAL, GLOBAL_ANONYMOUS, SCHOOL, SCHOOL_ANONYMOUS}
      */
-
     @PostMapping
     public ResponseEntity<PostResponseDto> writePost(@RequestBody PostRequestDto postRequestDto) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -42,30 +40,12 @@ public class PostController {
         return ResponseEntity.ok(postService.find(postId, username));
     }
 
-    //학교 게시판 실명게시글 전체조회
-    @GetMapping("/school")
-    public ResponseEntity<List<PostResponseDto>> getAllSchoolPosts() {
+    //게시글 리스트 조회
+    // 예시) http://localhost:8080/board?boardType=GLOBAL
+    @GetMapping
+    public ResponseEntity<List<PostResponseDto>> getAllPosts(@RequestParam BoardType boardType) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(postService.findAllSchool(username, BoardType.SCHOOL));
-    }
-
-    //학교 게시판 익명 게시글 전체조회
-    @GetMapping("/school/anonymous")
-    public ResponseEntity<List<PostResponseDto>> getSchoolAnonymousPosts() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return ResponseEntity.ok(postService.findAllSchool(username, BoardType.SCHOOL_ANONYMOUS));
-    }
-
-    //모두의 게시판 실명게시글 전체조회
-    @GetMapping("/global")
-    public ResponseEntity<List<PostResponseDto>> getAllGlobalPosts() {
-        return ResponseEntity.ok(postService.findAllGlobal(BoardType.GLOBAL));
-    }
-
-    //모두의 게시판 익명게시글 전체조회
-    @GetMapping("/global/anonymous")
-    public ResponseEntity<List<PostResponseDto>> getAllGlobalAnonymousPosts() {
-        return ResponseEntity.ok(postService.findAllGlobal(BoardType.GLOBAL_ANONYMOUS));
+        return ResponseEntity.ok(postService.findAllPosts(username, boardType));
     }
 
     //게시글 검색

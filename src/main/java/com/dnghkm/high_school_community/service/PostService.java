@@ -10,7 +10,6 @@ import com.dnghkm.high_school_community.exception.SchoolNotMatchException;
 import com.dnghkm.high_school_community.exception.UserNotMatchException;
 import com.dnghkm.high_school_community.repository.PostRepository;
 import com.dnghkm.high_school_community.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -21,15 +20,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.dnghkm.high_school_community.entity.BoardType.SCHOOL;
-import static com.dnghkm.high_school_community.entity.BoardType.SCHOOL_ANONYMOUS;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    static final String SCHOOL = "SCHOOL";
 
     /**
      * Todo : Paging 구현
@@ -50,6 +47,18 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
+    //게시글 리스트 조회
+    public List<PostResponseDto> findAllPosts(String username, BoardType boardType) {
+        User user = findUser(username);
+        List<Post> findList;
+        if (boardType.toString().contains(SCHOOL)) {
+            findList = postRepository.findAllBySchoolAndBoardType(user.getSchool(), boardType);
+        } else {
+            findList = postRepository.findAllByBoardType(boardType);
+        }
+        return findList.stream().map(PostResponseDto::new).collect(Collectors.toList());
+    }
+
     //단일 게시글 조회
     public PostResponseDto find(Long postId, String username) {
         Post findPost = findPost(postId);
@@ -64,9 +73,9 @@ public class PostService {
             throw new RuntimeException("익명 게시판은 작성자로 검색할 수 없습니다.");
         }
         User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new EntityNotFoundException("유저를 찾을 수 없습니다.")
+                () -> new UsernameNotFoundException("유저를 찾을 수 없습니다.")
         );
-        if (boardType == BoardType.SCHOOL || boardType == BoardType.SCHOOL_ANONYMOUS) {
+        if (boardType.toString().contains(SCHOOL)) {
             return searchBySchool(keyword, boardType, searchType, user);
         } else {
             return searchByGlobal(keyword, boardType, searchType);
@@ -98,20 +107,6 @@ public class PostService {
     }
 
 
-    //모두의 게시판 전체조회
-    public List<PostResponseDto> findAllGlobal(BoardType boardType) {
-        List<Post> findList = postRepository.findAllByBoardType(boardType);
-        return findList.stream().map(PostResponseDto::new).collect(Collectors.toList());
-    }
-
-    //학교 게시판 게시글 전체 조회
-    public List<PostResponseDto> findAllSchool(String username, BoardType boardType) {
-        User user = findUser(username);
-        School findSchool = user.getSchool();
-        List<Post> findList = postRepository.findAllBySchoolAndBoardType(findSchool, boardType);
-        return findList.stream().map(PostResponseDto::new).collect(Collectors.toList());
-    }
-
     //게시글 수정
     public PostResponseDto update(Long postId, PostRequestDto postRequestDto, String username) {
         Post findPost = findPost(postId);
@@ -138,9 +133,9 @@ public class PostService {
         BoardType boardType = findPost.getBoardType();
         User user = findUser(username);
         School school = user.getSchool();
-        if (boardType == SCHOOL || boardType == SCHOOL_ANONYMOUS) {
+        if (boardType.toString().contains(SCHOOL)) {
             if (!findPost.getSchool().equals(school)) {
-                throw new RuntimeException("게시글 투표 권한이 없습니다.");
+                throw new SchoolNotMatchException();
             }
         }
         findPost.upvote();
@@ -152,9 +147,9 @@ public class PostService {
         BoardType boardType = findPost.getBoardType();
         User user = findUser(username);
         School school = user.getSchool();
-        if (boardType == SCHOOL || boardType == SCHOOL_ANONYMOUS) {
+        if (boardType.toString().contains(SCHOOL)) {
             if (!findPost.getSchool().equals(school)) {
-                throw new RuntimeException("게시글 투표 권한이 없습니다.");
+                throw new SchoolNotMatchException();
             }
         }
         findPost.downVote();
@@ -177,10 +172,11 @@ public class PostService {
 
     private static void verifySchool(Post findPost, User user) {
         BoardType boardType = findPost.getBoardType();
-        if (boardType == SCHOOL || boardType == SCHOOL_ANONYMOUS) {
+        if (boardType.toString().contains(SCHOOL)) {
             if (!user.getSchool().equals(findPost.getSchool())) {
                 throw new SchoolNotMatchException();
             }
         }
     }
+
 }
